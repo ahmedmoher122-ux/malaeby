@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ملاعبي - لوحة المدير</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:#0D1117;color:#E6EDF3;direction:rtl}
+.header{background:linear-gradient(135deg,#0D2818,#0F3D24);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1A3D28}
+.header-logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#1D9E75,#0F6E56);display:flex;align-items:center;justify-content:center;font-size:20px}
+.header-title{font-size:18px;font-weight:600;color:#fff}
+.header-sub{font-size:12px;color:#9FE1CB}
+.admin-badge{background:rgba(29,158,117,0.2);border:1px solid rgba(29,158,117,0.3);color:#9FE1CB;padding:6px 14px;border-radius:20px;font-size:12px}
+.container{padding:20px;max-width:1200px;margin:0 auto}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{background:#1C2128;border:1px solid #30363D;border-radius:16px;padding:20px;text-align:center}
+.stat-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px}
+.stat-icon.green{background:rgba(29,158,117,0.15);color:#1D9E75}
+.stat-icon.blue{background:rgba(88,166,255,0.15);color:#58A6FF}
+.stat-icon.orange{background:rgba(239,159,39,0.15);color:#EF9F27}
+.stat-icon.red{background:rgba(226,75,74,0.15);color:#E24B4A}
+.stat-num{font-size:28px;font-weight:700;color:#fff;margin-bottom:4px}
+.stat-label{font-size:12px;color:#8B949E}
+.section-title{font-size:16px;font-weight:600;color:#fff;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.section-title i{color:#1D9E75}
+.card{background:#1C2128;border:1px solid #30363D;border-radius:16px;padding:20px;margin-bottom:20px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{background:#161B22;padding:12px 14px;text-align:right;font-size:12px;color:#8B949E;font-weight:500;border-bottom:1px solid #30363D}
+td{padding:12px 14px;font-size:13px;color:#E6EDF3;border-bottom:1px solid #21262D}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(29,158,117,0.05)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500}
+.badge-green{background:rgba(29,158,117,0.15);color:#9FE1CB;border:1px solid rgba(29,158,117,0.2)}
+.badge-blue{background:rgba(88,166,255,0.15);color:#58A6FF;border:1px solid rgba(88,166,255,0.2)}
+.badge-orange{background:rgba(239,159,39,0.15);color:#EF9F27;border:1px solid rgba(239,159,39,0.2)}
+.badge-red{background:rgba(226,75,74,0.15);color:#E24B4A;border:1px solid rgba(226,75,74,0.2)}
+.btn{padding:8px 16px;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
+.btn-green{background:linear-gradient(135deg,#1D9E75,#0F6E56);color:#fff}
+.btn-red{background:rgba(226,75,74,0.15);color:#E24B4A;border:1px solid rgba(226,75,74,0.2)}
+.btn-refresh{background:rgba(29,158,117,0.15);color:#9FE1CB;border:1px solid rgba(29,158,117,0.2)}
+.loading{text-align:center;padding:40px;color:#8B949E}
+.loading i{font-size:24px;margin-bottom:8px;display:block}
+.empty{text-align:center;padding:40px;color:#8B949E}
+.empty i{font-size:32px;margin-bottom:8px;display:block;color:#30363D}
+.refresh-btn{margin-bottom:16px}
+.total-revenue{color:#1D9E75;font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">
+    <div class="logo-icon">⚽</div>
+    <div>
+      <div class="header-title">ملاعبي</div>
+      <div class="header-sub">لوحة تحكم المدير</div>
+    </div>
+  </div>
+  <div class="admin-badge"><i class="fas fa-shield-alt"></i> مدير النظام</div>
+</div>
+
+<div class="container">
+
+  <!-- Stats -->
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card">
+      <div class="stat-icon green"><i class="fas fa-calendar-check"></i></div>
+      <div class="stat-num" id="totalBookings">0</div>
+      <div class="stat-label">إجمالي الحجوزات</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon orange"><i class="fas fa-money-bill-wave"></i></div>
+      <div class="stat-num" id="totalRevenue">0 جنيه</div>
+      <div class="stat-label">إجمالي الإيرادات</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon blue"><i class="fas fa-futbol"></i></div>
+      <div class="stat-num" id="totalStadiums">0</div>
+      <div class="stat-label">الملاعب المحجوزة</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon red"><i class="fas fa-credit-card"></i></div>
+      <div class="stat-num" id="totalPayments">0</div>
+      <div class="stat-label">طرق الدفع المستخدمة</div>
+    </div>
+  </div>
+
+  <!-- Bookings Table -->
+  <div class="card">
+    <div class="section-title">
+      <i class="fas fa-list"></i>
+      كل الحجوزات
+      <button class="btn btn-refresh" onclick="loadBookings()" style="margin-right:auto;margin-left:0">
+        <i class="fas fa-sync-alt"></i> تحديث
+      </button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>الملعب</th>
+            <th>المحافظة</th>
+            <th>التاريخ</th>
+            <th>الموعد</th>
+            <th>المدة</th>
+            <th>طريقة الدفع</th>
+            <th>المبلغ</th>
+          </tr>
+        </thead>
+        <tbody id="bookingsTable">
+          <tr><td colspan="8" class="loading"><i class="fas fa-spinner fa-spin"></i>جاري التحميل...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function getPayBadge(pay) {
+  if (!pay) return '';
+  if (pay.includes('فيزا')) return `<span class="badge badge-blue"><i class="fas fa-credit-card"></i>${pay}</span>`;
+  if (pay.includes('فودافون')) return `<span class="badge badge-red">📱 ${pay}</span>`;
+  if (pay.includes('WE')) return `<span class="badge badge-blue">💙 ${pay}</span>`;
+  if (pay.includes('اورانج')) return `<span class="badge badge-orange">🍊 ${pay}</span>`;
+  return `<span class="badge badge-green">${pay}</span>`;
+}
+
+function loadBookings() {
+  fetch('http://127.0.0.1:5000/api/bookings')
+    .then(r => r.json())
+    .then(data => {
+      const tbody = document.getElementById('bookingsTable');
+      if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="empty"><i class="fas fa-inbox"></i>لا يوجد حجوزات بعد</td></tr>';
+        return;
+      }
+      tbody.innerHTML = data.map(b => `
+        <tr>
+          <td><span class="badge badge-green">MK${b.id}</span></td>
+          <td>${b.stadium || '-'}</td>
+          <td>${b.gov || '-'}</td>
+          <td>${b.date || '-'}</td>
+          <td>${b.time || '-'}</td>
+          <td>${b.duration || '-'}</td>
+          <td>${getPayBadge(b.payment)}</td>
+          <td class="total-revenue">${b.price || 0} جنيه</td>
+        </tr>
+      `).join('');
+
+      // Update stats
+      document.getElementById('totalBookings').textContent = data.length;
+      const total = data.reduce((sum, b) => sum + (b.price || 0), 0);
+      document.getElementById('totalRevenue').textContent = total + ' جنيه';
+      const stadiums = new Set(data.map(b => b.stadium)).size;
+      document.getElementById('totalStadiums').textContent = stadiums;
+      const payments = new Set(data.map(b => b.payment)).size;
+      document.getElementById('totalPayments').textContent = payments;
+    })
+    .catch(() => {
+      document.getElementById('bookingsTable').innerHTML = 
+        '<tr><td colspan="8" class="empty"><i class="fas fa-exclamation-triangle"></i>تأكد إن السيرفر شغال</td></tr>';
+    });
+}
+
+// Load on start
+loadBookings();
+// Auto refresh every 30 seconds
+setInterval(loadBookings, 30000);
+</script>
+</body>
+</html>

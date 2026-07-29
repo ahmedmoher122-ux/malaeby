@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>ملاعبي - احجز ملعبك</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p:#1D9E75;--pd:#0F6E56;--pl:#E1F5EE;--pm:#9FE1CB;
+  --bg:#0D1117;--c1:#161B22;--c2:#1C2128;--c3:#21262D;
+  --br:#30363D;--br2:#3D444D;
+  --tx:#E6EDF3;--ts:#8B949E;--tm:#656D76;
+  --acc:#58A6FF;
+  --glow:rgba(29,158,117,0.25);
+  --rd:#E24B4A;--pu:#7F77DD;--am:#EF9F27;
+}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:var(--bg);color:var(--tx);direction:rtl;min-height:100vh;margin:0}
+.wrap{max-width:480px;margin:0 auto;padding-bottom:30px}
+
+/* Header */
+.hdr{
+  padding:20px 16px 24px;
+  background:linear-gradient(160deg,#0D2818 0%,#0F3D24 40%,#0D2818 100%);
+  border-bottom:1px solid #1A3D28;
+  position:relative;overflow:hidden;
+}
+.hdr::before{content:'';position:absolute;top:-40px;left:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(29,158,117,0.15) 0%,transparent 70%);}
+.hdr::after{content:'';position:absolute;bottom:-30px;right:-20px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(88,166,255,0.08) 0%,transparent 70%);}
+.hdr-top{display:flex;align-items:center;gap:12px;margin-bottom:18px;position:relative;z-index:1}
+.hdr-logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#1D9E75,#0F6E56);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 4px 14px rgba(29,158,117,0.4);}
+.hdr-name{font-size:20px;font-weight:600;color:#fff}
+.hdr-tag{font-size:12px;color:var(--pm)}
+.steps-row{display:flex;gap:6px;position:relative;z-index:1}
+.stp{flex:1;border-radius:20px;padding:6px 4px;text-align:center;font-size:10px;color:var(--tm);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);transition:all .3s;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.stp .snum{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--tm);transition:all .3s;}
+.stp.on{background:rgba(29,158,117,0.15);border-color:rgba(29,158,117,0.3);color:#fff}
+.stp.on .snum{background:var(--p);color:#fff;box-shadow:0 2px 8px rgba(29,158,117,0.5)}
+.stp.done{background:rgba(29,158,117,0.08);border-color:rgba(29,158,117,0.15);color:var(--pm)}
+.stp.done .snum{background:rgba(29,158,117,0.2);color:var(--pm)}
+
+/* Pages */
+.pg{display:none;padding:16px;animation:fadeUp .3s ease both}
+.pg.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* Cards */
+.card{background:var(--c2);border:1px solid var(--br);border-radius:16px;padding:16px;margin-bottom:12px;}
+.card-lbl{font-size:10px;font-weight:600;color:var(--ts);margin-bottom:12px;text-transform:uppercase;letter-spacing:.8px}
+
+/* Fields */
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:12px;color:var(--ts);margin-bottom:6px;font-weight:500}
+.fld select,.fld input{width:100%;padding:11px 14px;border:1px solid var(--br);border-radius:10px;font-size:14px;color:var(--tx);background:var(--c3);direction:rtl;font-family:inherit;transition:border-color .2s,box-shadow .2s;}
+.fld select:focus,.fld input:focus{outline:none;border-color:var(--p);box-shadow:0 0 0 3px rgba(29,158,117,0.15);}
+.fld select option{background:var(--c3);color:var(--tx)}
+
+/* Stadium cards */
+.sc{border:1px solid var(--br);border-radius:12px;padding:12px 14px;cursor:pointer;margin-bottom:8px;background:var(--c3);transition:all .2s;position:relative;overflow:hidden;}
+.sc:active{transform:scale(0.98)}
+.sc.sel{border-color:var(--p);background:rgba(29,158,117,0.08)}
+.sn{font-size:13px;font-weight:600;color:var(--tx);display:flex;justify-content:space-between;align-items:center}
+.sm{font-size:11px;color:var(--ts);margin-top:5px;display:flex;gap:12px;flex-wrap:wrap}
+.sm span{display:flex;align-items:center;gap:3px}
+.sm i{font-size:12px;color:var(--p)}
+.pbadge{font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(29,158,117,0.15);color:var(--pm);font-weight:500;white-space:nowrap;border:1px solid rgba(29,158,117,0.2)}
+
+/* Time grid */
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.tb{padding:11px 6px;border:1px solid var(--br);border-radius:10px;background:var(--c3);font-size:13px;color:var(--tx);cursor:pointer;text-align:center;line-height:1.3;font-family:inherit;transition:all .2s;}
+.tb:active{transform:scale(0.97)}
+.tb.sel{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;border-color:var(--p);box-shadow:0 4px 14px var(--glow);}
+.tb.bkd{background:var(--c1);color:var(--tm);text-decoration:line-through;cursor:not-allowed;border-color:var(--br);opacity:.5}
+.tb small{display:block;font-size:10px;margin-top:1px}
+
+/* Duration */
+.dlist{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.dc{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid var(--br);border-radius:10px;background:var(--c3);cursor:pointer;transition:all .2s;}
+.dc:active{transform:scale(0.98)}
+.dc.sel{border-color:var(--p);background:rgba(29,158,117,0.08)}
+.dc.na{opacity:.35;cursor:not-allowed;background:var(--c1)}
+.dr{font-size:13px;font-weight:600;color:var(--tx)}
+.ds{font-size:11px;color:var(--ts);margin-top:2px}
+.dp{font-size:12px;font-weight:600;color:var(--pm);background:rgba(29,158,117,0.12);padding:4px 10px;border-radius:20px;white-space:nowrap;border:1px solid rgba(29,158,117,0.2)}
+
+/* Pay opts */
+.pgrid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.pgrid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.po{border:1px solid var(--br);border-radius:12px;padding:14px 8px;cursor:pointer;text-align:center;background:var(--c3);transition:all .2s;}
+.po:active{transform:scale(0.97)}
+.po.sel{border-color:var(--p);background:rgba(29,158,117,0.1)}
+.po-ic{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:18px}
+.po-ic.vi{background:rgba(24,95,165,0.2);color:#58A6FF}
+.po-ic.vo{background:rgba(204,0,0,0.15)}
+.po-ic.we{background:rgba(127,119,221,0.15)}
+.po-ic.or{background:rgba(239,159,39,0.15)}
+.po-nm{font-size:12px;font-weight:600;color:var(--tx);line-height:1.3}
+
+/* Pay forms */
+.pform{margin-top:14px;display:none;animation:fadeUp .3s ease both}
+.pform.show{display:block}
+.wnote{border-radius:10px;padding:10px 13px;margin-bottom:12px;font-size:12px;display:flex;gap:8px;align-items:flex-start;line-height:1.6}
+.wnote i{font-size:14px;flex-shrink:0;margin-top:1px}
+.nv{background:rgba(204,0,0,0.12);color:#FF7B7B;border:1px solid rgba(204,0,0,0.2)}
+.nw{background:rgba(127,119,221,0.12);color:#AFA9EC;border:1px solid rgba(127,119,221,0.2)}
+.no{background:rgba(239,159,39,0.12);color:#FAC775;border:1px solid rgba(239,159,39,0.2)}
+.iw{position:relative;margin-bottom:12px}
+.iw i{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--ts)}
+.iw input{padding-right:36px;margin-bottom:0}
+.tcol{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* Summary */
+.srow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--br);font-size:13px}
+.srow:last-child{border-bottom:none}
+.sl{color:var(--ts)}
+.sv{font-weight:600;color:var(--tx);text-align:left;max-width:60%}
+.trow{display:flex;justify-content:space-between;padding:10px 0 0;font-size:15px;font-weight:700;border-top:1px solid var(--br);margin-top:6px}
+.tam{color:var(--p);font-size:17px}
+
+/* Buttons */
+.btn{width:100%;padding:13px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;margin-top:6px;}
+.btn:active{transform:scale(0.98)}
+.bg{background:linear-gradient(135deg,#1D9E75,#0F6E56);color:#fff;box-shadow:0 4px 16px rgba(29,158,117,0.35);border:1px solid rgba(29,158,117,0.3);}
+.bg:hover{box-shadow:0 6px 20px rgba(29,158,117,0.45)}
+.br2{background:linear-gradient(135deg,#CC0000,#991500);color:#fff;box-shadow:0 4px 14px rgba(204,0,0,0.3);border:1px solid rgba(204,0,0,0.3)}
+.bpu{background:linear-gradient(135deg,#7F77DD,#534AB7);color:#fff;box-shadow:0 4px 14px rgba(127,119,221,0.3);border:1px solid rgba(127,119,221,0.3)}
+.bam{background:linear-gradient(135deg,#EF9F27,#BA7517);color:#fff;box-shadow:0 4px 14px rgba(239,159,39,0.3);border:1px solid rgba(239,159,39,0.3)}
+.bo{background:transparent;color:var(--ts);border:1px solid var(--br);margin-top:8px;}
+.bo:hover{background:var(--c3);color:var(--tx);border-color:var(--br2)}
+
+/* Divider */
+.sdiv{display:flex;align-items:center;gap:8px;margin:14px 0 10px;font-size:10px;color:var(--tm);font-weight:600;text-transform:uppercase;letter-spacing:.6px}
+.sdiv::before,.sdiv::after{content:'';flex:1;height:1px;background:var(--br)}
+
+/* Confirm */
+.cfhd{text-align:center;padding:8px 0 16px}
+.cfic{width:58px;height:58px;border-radius:50%;background:rgba(29,158,117,0.12);border:1px solid rgba(29,158,117,0.25);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:26px;color:var(--p);}
+.cft{font-size:16px;font-weight:600;color:var(--tx);margin-bottom:4px}
+.cfs{font-size:12px;color:var(--ts);line-height:1.6}
+.cfdet{background:var(--c3);border-radius:10px;padding:12px;margin:14px 0;border:1px solid var(--br)}
+
+/* Ticket */
+.tkt{border-radius:16px;overflow:hidden;border:1px solid var(--br);margin-bottom:14px}
+.tkt-top{background:linear-gradient(135deg,#0A2918 0%,#0F4028 40%,#0D3520 100%);padding:22px 18px;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid rgba(29,158,117,0.2);}
+.tkt-top::before{content:'';position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(29,158,117,0.2) 0%,transparent 70%);}
+.tkt-emoji{font-size:34px;margin-bottom:8px;animation:pop .5s .2s both;position:relative;z-index:1}
+@keyframes pop{0%{transform:scale(0) rotate(-15deg)}70%{transform:scale(1.2) rotate(5deg)}100%{transform:scale(1) rotate(0)}}
+.tkt-ok{font-size:17px;font-weight:700;color:#fff;margin-bottom:4px;position:relative;z-index:1}
+.tkt-sub{font-size:12px;color:var(--pm);position:relative;z-index:1}
+.tkt-ref{background:rgba(29,158,117,0.15);border-radius:10px;padding:12px;margin-top:14px;border:1px solid rgba(29,158,117,0.25);position:relative;z-index:1;}
+.tkt-rl{font-size:10px;color:var(--pm);margin-bottom:4px;letter-spacing:1.5px;text-transform:uppercase}
+.tkt-rn{font-size:26px;font-weight:700;color:#fff;letter-spacing:4px;text-shadow:0 0 20px rgba(29,158,117,0.5)}
+.tkt-div{background:var(--c2);display:flex;align-items:center;border-top:1px solid var(--br);border-bottom:1px solid var(--br)}
+.tcirc{width:14px;height:14px;border-radius:50%;background:var(--bg);flex-shrink:0;border:1px solid var(--br)}
+.tdash{flex:1;border-top:1.5px dashed var(--br)}
+.tkt-body{background:var(--c2);padding:16px}
+.tr{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--br);font-size:13px}
+.tr:last-child{border-bottom:none}
+.tl{color:var(--ts);display:flex;align-items:center;gap:6px}
+.tl i{font-size:13px;color:var(--p)}
+.tv{font-weight:600;color:var(--tx);text-align:left;max-width:55%}
+.tkt-am{background:rgba(29,158,117,0.1);border-radius:10px;padding:12px;text-align:center;margin-top:12px;border:1px solid rgba(29,158,117,0.2);}
+.tkt-aml{font-size:11px;color:var(--pm);margin-bottom:3px}
+.tkt-amv{font-size:24px;font-weight:700;color:var(--p)}
+
+/* Info */
+.ibox{background:rgba(29,158,117,0.08);border:1px solid rgba(29,158,117,0.15);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--pm);display:flex;gap:8px;margin-bottom:12px;line-height:1.6}
+.ibox i{font-size:14px;flex-shrink:0;margin-top:1px;color:var(--p)}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hdr">
+    <div class="hdr-top">
+      <div class="hdr-logo"><i class="fas fa-futbol"></i></div>
+      <div><div class="hdr-name">ملاعبي</div><div class="hdr-tag">احجز ملعبك في ثواني ⚡</div></div>
+    </div>
+    <div class="steps-row">
+      <div class="stp on" id="s1"><div class="snum">١</div>الملعب</div>
+      <div class="stp" id="s2"><div class="snum">٢</div>الموعد</div>
+      <div class="stp" id="s3"><div class="snum">٣</div>الدفع</div>
+      <div class="stp" id="s4"><div class="snum">٤</div>تأكيد</div>
+    </div>
+  </div>
+
+  <!-- Page 1 -->
+  <div class="pg on" id="p1">
+    <div class="card">
+      <div class="card-lbl">اختر موقعك</div>
+      <div class="fld">
+        <label>المحافظة</label>
+        <select id="gov" onchange="loadS()">
+          <option value="">-- اختر المحافظة --</option>
+          <option value="cairo">القاهرة</option>
+          <option value="giza">الجيزة</option>
+          <option value="alex">الإسكندرية</option>
+          <option value="qalyubia">القليوبية</option>
+          <option value="sharqia">الشرقية</option>
+          <option value="dakahlia">الدقهلية</option>
+          <option value="gharbia">الغربية</option>
+          <option value="monufia">المنوفية</option>
+          <option value="beheira">البحيرة</option>
+          <option value="kafr">كفر الشيخ</option>
+          <option value="damietta">دمياط</option>
+          <option value="ismailia">الإسماعيلية</option>
+          <option value="suez">السويس</option>
+          <option value="portsaid">بورسعيد</option>
+          <option value="sinai_north">شمال سيناء</option>
+          <option value="sinai_south">جنوب سيناء</option>
+          <option value="fayoum">الفيوم</option>
+          <option value="beni_suef">بني سويف</option>
+          <option value="minya">المنيا</option>
+          <option value="assiut">أسيوط</option>
+          <option value="sohag">سوهاج</option>
+          <option value="qena">قنا</option>
+          <option value="luxor">الأقصر</option>
+          <option value="aswan">أسوان</option>
+          <option value="red_sea">البحر الأحمر</option>
+          <option value="new_valley">الوادي الجديد</option>
+          <option value="matrouh">مطروح</option>
+        </select>
+      </div>
+      <div id="ssec" class="hidden">
+        <div class="card-lbl" style="margin-top:4px">اختر الملعب</div>
+        <div id="slist"></div>
+      </div>
+    </div>
+    <button class="btn bg hidden" id="n1" onclick="go(2)"><span>التالي</span><i class="fas fa-arrow-left"></i></button>
+  </div>
+
+  <!-- Page 2 -->
+  <div class="pg" id="p2">
+    <div class="card">
+      <div class="card-lbl">الوقت والتاريخ</div>
+      <div class="fld"><label>التاريخ</label><input type="date" id="dt" onchange="renderT()"/></div>
+      <div class="fld">
+        <label>ساعة البداية</label>
+        <div class="ibox"><i class="fas fa-info-circle"></i>اضغط على ساعة البداية ثم اختار المدة</div>
+        <div class="tgrid" id="tgrid"></div>
+      </div>
+      <div id="dsec" class="hidden">
+        <div class="fld"><label>مدة الحجز</label><div class="dlist" id="dlist"></div></div>
+      </div>
+    </div>
+    <button class="btn bg hidden" id="n2" onclick="go(3)"><span>التالي</span><i class="fas fa-arrow-left"></i></button>
+    <button class="btn bo" onclick="go(1)"><i class="fas fa-arrow-right"></i><span>رجوع</span></button>
+  </div>
+
+  <!-- Page 3 -->
+  <div class="pg" id="p3">
+    <div class="card">
+      <div class="card-lbl">ملخص الحجز</div>
+      <div class="srow"><span class="sl">الملعب</span><span class="sv" id="ss"></span></div>
+      <div class="srow"><span class="sl">الموعد</span><span class="sv" id="st"></span></div>
+      <div class="srow"><span class="sl">المدة</span><span class="sv" id="sdur"></span></div>
+      <div class="trow"><span>الإجمالي</span><span class="tam" id="stot"></span></div>
+    </div>
+    <div class="card">
+      <div class="card-lbl">طريقة الدفع</div>
+      <div class="sdiv">بطاقة بنكية</div>
+      <div class="pgrid2" style="margin-bottom:10px">
+        <div class="po" id="op-visa" onclick="selP('visa')">
+          <div class="po-ic vi"><i class="fas fa-credit-card"></i></div>
+          <div class="po-nm">فيزا / كارت</div>
+        </div>
+        <div></div>
+      </div>
+      <div class="sdiv">محافظ إلكترونية</div>
+      <div class="pgrid3">
+        <div class="po" id="op-voda" onclick="selP('voda')"><div class="po-ic vo">📱</div><div class="po-nm">فودافون كاش</div></div>
+        <div class="po" id="op-we" onclick="selP('we')"><div class="po-ic we">💙</div><div class="po-nm">WE كاش</div></div>
+        <div class="po" id="op-orange" onclick="selP('orange')"><div class="po-ic or">🍊</div><div class="po-nm">اورانج كاش</div></div>
+      </div>
+      <div class="pform" id="f-visa">
+        <div class="fld"><label>رقم البطاقة</label><div class="iw"><i class="fas fa-credit-card"></i><input type="text" id="cnum" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" oninput="fmtC(this)"/></div></div>
+        <div class="fld"><label>الاسم على البطاقة</label><input type="text" id="cnm" placeholder="الاسم كما هو مكتوب"/></div>
+        <div class="tcol">
+          <div class="fld"><label>تاريخ الانتهاء</label><input type="text" id="cexp" placeholder="MM/YY" maxlength="5" oninput="fmtE(this)"/></div>
+          <div class="fld"><label>CVV</label><input type="text" id="ccvv" placeholder="XXX" maxlength="3"/></div>
+        </div>
+        <button class="btn bg" onclick="pay()"><i class="fas fa-lock"></i><span>ادفع وانتقل للتأكيد</span></button>
+      </div>
+      <div class="pform" id="f-voda">
+        <div class="wnote nv"><i class="fas fa-info-circle"></i>هيتبعتلك كود تأكيد على رقم فودافون كاش</div>
+        <div class="fld"><label>رقم فودافون كاش</label><div class="iw"><i class="fas fa-mobile-alt"></i><input type="tel" id="vnum" placeholder="01xxxxxxxxx" maxlength="11"/></div></div>
+        <div class="fld"><label>الاسم الكامل</label><input type="text" id="vnm" placeholder="اسم صاحب المحفظة"/></div>
+        <button class="btn br2" onclick="pay()"><i class="fas fa-paper-plane"></i><span>ادفع بفودافون كاش</span></button>
+      </div>
+      <div class="pform" id="f-we">
+        <div class="wnote nw"><i class="fas fa-info-circle"></i>هيتبعتلك كود تأكيد على رقم WE كاش</div>
+        <div class="fld"><label>رقم WE كاش</label><div class="iw"><i class="fas fa-mobile-alt"></i><input type="tel" id="wnum" placeholder="01xxxxxxxxx" maxlength="11"/></div></div>
+        <div class="fld"><label>الاسم الكامل</label><input type="text" id="wnm" placeholder="اسم صاحب المحفظة"/></div>
+        <button class="btn bpu" onclick="pay()"><i class="fas fa-paper-plane"></i><span>ادفع بـ WE كاش</span></button>
+      </div>
+      <div class="pform" id="f-orange">
+        <div class="wnote no"><i class="fas fa-info-circle"></i>هيتبعتلك كود تأكيد على رقم اورانج كاش</div>
+        <div class="fld"><label>رقم اورانج كاش</label><div class="iw"><i class="fas fa-mobile-alt"></i><input type="tel" id="onum" placeholder="01xxxxxxxxx" maxlength="11"/></div></div>
+        <div class="fld"><label>الاسم الكامل</label><input type="text" id="onm" placeholder="اسم صاحب المحفظة"/></div>
+        <button class="btn bam" onclick="pay()"><i class="fas fa-paper-plane"></i><span>ادفع بـ اورانج كاش</span></button>
+      </div>
+    </div>
+    <button class="btn bo" onclick="go(2)"><i class="fas fa-arrow-right"></i><span>رجوع</span></button>
+  </div>
+
+  <!-- Page 4 -->
+  <div class="pg" id="p4">
+    <div class="card">
+      <div class="cfhd">
+        <div class="cfic"><i class="fas fa-receipt"></i></div>
+        <div class="cft">راجع بيانات حجزك</div>
+        <div class="cfs">تأكد من التفاصيل قبل الضغط على تأكيد</div>
+      </div>
+      <div class="cfdet">
+        <div class="srow"><span class="sl">الملعب</span><span class="sv" id="cf-s"></span></div>
+        <div class="srow"><span class="sl">المحافظة</span><span class="sv" id="cf-g"></span></div>
+        <div class="srow"><span class="sl">التاريخ</span><span class="sv" id="cf-d"></span></div>
+        <div class="srow"><span class="sl">الموعد</span><span class="sv" id="cf-t"></span></div>
+        <div class="srow"><span class="sl">المدة</span><span class="sv" id="cf-dur"></span></div>
+        <div class="srow"><span class="sl">طريقة الدفع</span><span class="sv" id="cf-p"></span></div>
+        <div class="srow"><span class="sl">المبلغ</span><span class="sv" style="color:var(--p)" id="cf-pr"></span></div>
+      </div>
+      <button class="btn bg" onclick="confirmBooking()"><i class="fas fa-check-circle"></i><span>تأكيد الحجز نهائياً</span></button>
+      <button class="btn bo" onclick="go(3)"><i class="fas fa-arrow-right"></i><span>رجوع وتعديل</span></button>
+    </div>
+  </div>
+
+  <!-- Page 5 -->
+  <div class="pg" id="p5">
+    <div class="tkt">
+      <div class="tkt-top">
+        <div class="tkt-emoji">🎉</div>
+        <div class="tkt-ok">تم الحجز بنجاح!</div>
+        <div class="tkt-sub">تم تأكيد حجزك وخصم المبلغ</div>
+        <div class="tkt-ref">
+          <div class="tkt-rl">رقم الحجز</div>
+          <div class="tkt-rn" id="tk-ref"></div>
+        </div>
+      </div>
+      <div class="tkt-div"><div class="tcirc" style="margin-right:-7px"></div><div class="tdash"></div><div class="tcirc" style="margin-left:-7px"></div></div>
+      <div class="tkt-body">
+        <div class="tr"><span class="tl"><i class="fas fa-building"></i>الملعب</span><span class="tv" id="tk-s"></span></div>
+        <div class="tr"><span class="tl"><i class="fas fa-map-marker-alt"></i>المحافظة</span><span class="tv" id="tk-g"></span></div>
+        <div class="tr"><span class="tl"><i class="fas fa-calendar"></i>التاريخ</span><span class="tv" id="tk-d"></span></div>
+        <div class="tr"><span class="tl"><i class="fas fa-clock"></i>الموعد</span><span class="tv" id="tk-t"></span></div>
+        <div class="tr"><span class="tl"><i class="fas fa-hourglass-half"></i>المدة</span><span class="tv" id="tk-dur"></span></div>
+        <div class="tr"><span class="tl"><i class="fas fa-wallet"></i>الدفع</span><span class="tv" id="tk-p"></span></div>
+        <div class="tkt-am"><div class="tkt-aml">المبلغ المدفوع</div><div class="tkt-amv" id="tk-pr"></div></div>
+      </div>
+    </div>
+    <button class="btn bg" onclick="reset()"><i class="fas fa-plus"></i><span>حجز جديد</span></button>
+  </div>
+
+</div>
+
+<script>
+const STS={
+cairo:[{name:"ملعب النجوم",area:"مدينة نصر",price:200,size:"11×11",r:"4.8"},{name:"ملعب الأحلام",area:"المعادي",price:250,size:"7×7",r:"4.6"},{name:"ملعب الشروق",area:"مصر الجديدة",price:180,size:"5×5",r:"4.5"}],
+giza:[{name:"ملعب الهرم",area:"الهرم",price:150,size:"7×7",r:"4.4"},{name:"ملعب 6 أكتوبر",area:"6 أكتوبر",price:220,size:"11×11",r:"4.7"},{name:"ملعب الشيخ زايد",area:"الشيخ زايد",price:200,size:"7×7",r:"4.5"}],
+alex:[{name:"ملعب البحر",area:"سيدي بشر",price:200,size:"7×7",r:"4.9"},{name:"ملعب الكورنيش",area:"المنتزه",price:230,size:"5×5",r:"4.6"},{name:"ملعب العجمي",area:"العجمي",price:170,size:"7×7",r:"4.3"}],
+qalyubia:[{name:"ملعب بنها",area:"بنها",price:130,size:"7×7",r:"4.3"},{name:"ملعب قها",area:"قها",price:100,size:"5×5",r:"4.2"},{name:"ملعب شبرا الخيمة",area:"شبرا الخيمة",price:120,size:"7×7",r:"4.1"}],
+sharqia:[{name:"ملعب الزقازيق",area:"الزقازيق",price:120,size:"7×7",r:"4.4"},{name:"ملعب العاشر",area:"العاشر من رمضان",price:160,size:"11×11",r:"4.5"},{name:"ملعب بلبيس",area:"بلبيس",price:110,size:"5×5",r:"4.0"}],
+dakahlia:[{name:"ملعب المنصورة",area:"المنصورة",price:140,size:"7×7",r:"4.6"},{name:"ملعب طلخا",area:"طلخا",price:110,size:"5×5",r:"4.1"},{name:"ملعب ميت غمر",area:"ميت غمر",price:100,size:"5×5",r:"4.0"}],
+gharbia:[{name:"ملعب طنطا",area:"طنطا",price:130,size:"7×7",r:"4.3"},{name:"ملعب المحلة",area:"المحلة الكبرى",price:140,size:"11×11",r:"4.4"},{name:"ملعب كفر الزيات",area:"كفر الزيات",price:110,size:"5×5",r:"4.1"}],
+monufia:[{name:"ملعب شبين الكوم",area:"شبين الكوم",price:120,size:"7×7",r:"4.2"},{name:"ملعب منوف",area:"منوف",price:100,size:"5×5",r:"4.0"},{name:"ملعب السادات",area:"مدينة السادات",price:130,size:"7×7",r:"4.3"}],
+beheira:[{name:"ملعب دمنهور",area:"دمنهور",price:120,size:"7×7",r:"4.2"},{name:"ملعب كفر الدوار",area:"كفر الدوار",price:110,size:"5×5",r:"4.1"},{name:"ملعب أبو المطامير",area:"أبو المطامير",price:100,size:"5×5",r:"4.0"}],
+kafr:[{name:"ملعب كفر الشيخ",area:"كفر الشيخ",price:110,size:"7×7",r:"4.2"},{name:"ملعب دسوق",area:"دسوق",price:100,size:"5×5",r:"4.0"},{name:"ملعب فوه",area:"فوه",price:90,size:"5×5",r:"3.9"}],
+damietta:[{name:"ملعب دمياط",area:"دمياط",price:130,size:"7×7",r:"4.3"},{name:"ملعب رأس البر",area:"رأس البر",price:150,size:"7×7",r:"4.5"},{name:"ملعب فارسكور",area:"فارسكور",price:110,size:"5×5",r:"4.0"}],
+ismailia:[{name:"ملعب الإسماعيلية",area:"الإسماعيلية",price:140,size:"7×7",r:"4.4"},{name:"ملعب القنطرة",area:"القنطرة",price:120,size:"5×5",r:"4.1"},{name:"ملعب فيد",area:"فيد",price:110,size:"5×5",r:"4.0"}],
+suez:[{name:"ملعب السويس",area:"السويس",price:150,size:"7×7",r:"4.4"},{name:"ملعب عتاقة",area:"عتاقة",price:130,size:"5×5",r:"4.2"},{name:"ملعب الأربعين",area:"الأربعين",price:120,size:"7×7",r:"4.1"}],
+portsaid:[{name:"ملعب بورسعيد",area:"بورسعيد",price:160,size:"11×11",r:"4.5"},{name:"ملعب الزهور",area:"حي الزهور",price:140,size:"7×7",r:"4.3"},{name:"ملعب العرب",area:"حي العرب",price:130,size:"5×5",r:"4.2"}],
+sinai_north:[{name:"ملعب العريش",area:"العريش",price:120,size:"7×7",r:"4.2"},{name:"ملعب رفح",area:"رفح",price:100,size:"5×5",r:"4.0"},{name:"ملعب الشيخ زويد",area:"الشيخ زويد",price:90,size:"5×5",r:"3.9"}],
+sinai_south:[{name:"ملعب شرم الشيخ",area:"شرم الشيخ",price:250,size:"7×7",r:"4.7"},{name:"ملعب دهب",area:"دهب",price:200,size:"5×5",r:"4.5"},{name:"ملعب طابا",area:"طابا",price:180,size:"5×5",r:"4.3"}],
+fayoum:[{name:"ملعب الفيوم",area:"الفيوم",price:110,size:"7×7",r:"4.2"},{name:"ملعب سنورس",area:"سنورس",price:90,size:"5×5",r:"4.0"},{name:"ملعب إطسا",area:"إطسا",price:85,size:"5×5",r:"3.9"}],
+beni_suef:[{name:"ملعب بني سويف",area:"بني سويف",price:110,size:"7×7",r:"4.2"},{name:"ملعب ناصر",area:"ناصر",price:90,size:"5×5",r:"4.0"},{name:"ملعب الواسطى",area:"الواسطى",price:85,size:"5×5",r:"3.9"}],
+minya:[{name:"ملعب المنيا",area:"المنيا",price:110,size:"7×7",r:"4.2"},{name:"ملعب ملوي",area:"ملوي",price:90,size:"5×5",r:"4.0"},{name:"ملعب سمالوط",area:"سمالوط",price:85,size:"5×5",r:"3.9"}],
+assiut:[{name:"ملعب أسيوط",area:"أسيوط",price:120,size:"7×7",r:"4.3"},{name:"ملعب ديروط",area:"ديروط",price:95,size:"5×5",r:"4.0"},{name:"ملعب منفلوط",area:"منفلوط",price:90,size:"5×5",r:"3.9"}],
+sohag:[{name:"ملعب سوهاج",area:"سوهاج",price:110,size:"7×7",r:"4.1"},{name:"ملعب أخميم",area:"أخميم",price:90,size:"5×5",r:"4.0"},{name:"ملعب طهطا",area:"طهطا",price:85,size:"5×5",r:"3.8"}],
+qena:[{name:"ملعب قنا",area:"قنا",price:110,size:"7×7",r:"4.1"},{name:"ملعب نجع حمادي",area:"نجع حمادي",price:95,size:"5×5",r:"4.0"},{name:"ملعب قوص",area:"قوص",price:85,size:"5×5",r:"3.9"}],
+luxor:[{name:"ملعب الأقصر",area:"الأقصر",price:150,size:"7×7",r:"4.5"},{name:"ملعب أرمنت",area:"أرمنت",price:120,size:"5×5",r:"4.2"},{name:"ملعب إسنا",area:"إسنا",price:110,size:"5×5",r:"4.0"}],
+aswan:[{name:"ملعب أسوان",area:"أسوان",price:140,size:"7×7",r:"4.4"},{name:"ملعب كوم أمبو",area:"كوم أمبو",price:110,size:"5×5",r:"4.1"},{name:"ملعب أدفو",area:"أدفو",price:100,size:"5×5",r:"4.0"}],
+red_sea:[{name:"ملعب الغردقة",area:"الغردقة",price:250,size:"7×7",r:"4.7"},{name:"ملعب سفاجا",area:"سفاجا",price:200,size:"5×5",r:"4.4"},{name:"ملعب مرسى علم",area:"مرسى علم",price:220,size:"5×5",r:"4.5"}],
+new_valley:[{name:"ملعب الخارجة",area:"الخارجة",price:100,size:"7×7",r:"4.0"},{name:"ملعب الداخلة",area:"الداخلة",price:90,size:"5×5",r:"3.9"},{name:"ملعب الفرافرة",area:"الفرافرة",price:80,size:"5×5",r:"3.8"}],
+matrouh:[{name:"ملعب مرسى مطروح",area:"مرسى مطروح",price:150,size:"7×7",r:"4.3"},{name:"ملعب سيوة",area:"سيوة",price:130,size:"5×5",r:"4.2"},{name:"ملعب الحمام",area:"الحمام",price:120,size:"5×5",r:"4.1"}]
+};
+const GN={cairo:"القاهرة",giza:"الجيزة",alex:"الإسكندرية",qalyubia:"القليوبية",sharqia:"الشرقية",dakahlia:"الدقهلية",gharbia:"الغربية",monufia:"المنوفية",beheira:"البحيرة",kafr:"كفر الشيخ",damietta:"دمياط",ismailia:"الإسماعيلية",suez:"السويس",portsaid:"بورسعيد",sinai_north:"شمال سيناء",sinai_south:"جنوب سيناء",fayoum:"الفيوم",beni_suef:"بني سويف",minya:"المنيا",assiut:"أسيوط",sohag:"سوهاج",qena:"قنا",luxor:"الأقصر",aswan:"أسوان",red_sea:"البحر الأحمر",new_valley:"الوادي الجديد",matrouh:"مطروح"};
+const HL={13:"01:00 م",14:"02:00 م",15:"03:00 م",16:"04:00 م",17:"05:00 م",18:"06:00 م",19:"07:00 م",20:"08:00 م",21:"09:00 م",22:"10:00 م",23:"11:00 م"};
+const BOOKED=new Set([15,16,20]);
+const PN={visa:"فيزا / كارت",voda:"فودافون كاش",we:"WE كاش",orange:"اورانج كاش"};
+let D={gov:"",stad:null,date:"",start:null,dur:null,durTxt:"",price:0,range:"",pay:""};
+function loadS(){D.gov=document.getElementById("gov").value;D.stad=null;document.getElementById("n1").classList.add("hidden");const sl=document.getElementById("slist"),sec=document.getElementById("ssec");if(!D.gov){sl.innerHTML="";sec.classList.add("hidden");return;}sec.classList.remove("hidden");sl.innerHTML=STS[D.gov].map((s,i)=>`<div class="sc" id="sc${i}" onclick="pickS(${i})"><div class="sn"><span><i class="fas fa-futbol" style="font-size:13px;margin-left:6px;color:var(--p)"></i>${s.name}</span><span class="pbadge">${s.price} جنيه/س</span></div><div class="sm"><span><i class="fas fa-map-marker-alt"></i>${s.area}</span><span><i class="fas fa-users"></i>${s.size}</span><span><i class="fas fa-star"></i>${s.r}</span></div></div>`).join("");}
+function pickS(i){D.stad=STS[D.gov][i];document.querySelectorAll(".sc").forEach(c=>c.classList.remove("sel"));document.getElementById("sc"+i).classList.add("sel");document.getElementById("n1").classList.remove("hidden");}
+function go(n){document.querySelectorAll(".pg").forEach(p=>p.classList.remove("on"));[1,2,3,4].forEach(i=>document.getElementById("s"+i).className="stp"+(i<n?" done":i===n?" on":""));document.getElementById("p"+n).classList.add("on");if(n===2)initP2();if(n===3)fillSum();if(n===4)fillCf();window.scrollTo(0,0);}
+function initP2(){const td=new Date().toISOString().split("T")[0];const di=document.getElementById("dt");di.min=td;if(!di.value)di.value=td;D.start=null;D.dur=null;document.getElementById("dsec").classList.add("hidden");document.getElementById("n2").classList.add("hidden");renderT();}
+function renderT(){D.date=document.getElementById("dt").value;D.start=null;D.dur=null;document.getElementById("dsec").classList.add("hidden");document.getElementById("n2").classList.add("hidden");document.getElementById("tgrid").innerHTML=Object.keys(HL).map(h=>{h=parseInt(h);if(BOOKED.has(h))return`<button class="tb bkd" disabled>${HL[h]}<small>محجوز</small></button>`;if(h>=23)return`<button class="tb bkd" disabled>${HL[h]}<small>لا يتاح</small></button>`;return`<button class="tb" id="tb${h}" onclick="pickT(${h})">${HL[h]}</button>`;}).join("");}
+function pickT(h){D.start=h;D.dur=null;document.querySelectorAll(".tb").forEach(b=>b.classList.remove("sel"));const el=document.getElementById("tb"+h);if(el)el.classList.add("sel");document.getElementById("n2").classList.add("hidden");renderDurs(h);document.getElementById("dsec").classList.remove("hidden");}
+function renderDurs(h){const p=D.stad?D.stad.price:0;let html="";for(let d=1;d<=2;d++){const end=h+d;if(end>23)break;let blocked=false;for(let x=h+1;x<end;x++)if(BOOKED.has(x)){blocked=true;break;}const sl=HL[h],el=HL[end]||"12:00 ص";const tot=p*d,dt=d===1?"ساعة واحدة":"ساعتان";if(blocked)html+=`<div class="dc na"><div><div class="dr">${sl} ← ${el}</div><div class="ds">${dt} · محجوز</div></div></div>`;else html+=`<div class="dc" id="dc${d}" onclick="pickD(${d},'${sl}','${el}','${dt}',${tot})"><div><div class="dr">${sl} ← ${el}</div><div class="ds">${dt}</div></div><span class="dp">${tot} جنيه</span></div>`;}document.getElementById("dlist").innerHTML=html;}
+function pickD(d,sl,el,dt,tot){D.dur=d;D.durTxt=dt;D.price=tot;D.range=sl+" ← "+el;document.querySelectorAll(".dc").forEach(c=>c.classList.remove("sel"));const el2=document.getElementById("dc"+d);if(el2)el2.classList.add("sel");document.getElementById("n2").classList.remove("hidden");}
+function fillSum(){document.getElementById("ss").textContent=D.stad.name;document.getElementById("st").textContent=D.range;document.getElementById("sdur").textContent=D.durTxt;document.getElementById("stot").textContent=D.price+" جنيه";D.pay="";["visa","voda","we","orange"].forEach(m=>{document.getElementById("op-"+m).classList.remove("sel");document.getElementById("f-"+m).classList.remove("show");});}
+function selP(m){D.pay=m;["visa","voda","we","orange"].forEach(x=>{document.getElementById("op-"+x).classList.toggle("sel",x===m);document.getElementById("f-"+x).classList.toggle("show",x===m);});}
+function fmtC(el){let v=el.value.replace(/\D/g,"").substring(0,16);el.value=v.replace(/(.{4})/g,"$1 ").trim();}
+function fmtE(el){let v=el.value.replace(/\D/g,"");if(v.length>2)v=v.substring(0,2)+"/"+v.substring(2,4);el.value=v;}
+function pay(){if(!D.pay){alert("من فضلك اختر طريقة الدفع");return;}if(D.pay==="visa"){if(document.getElementById("cnum").value.replace(/\s/g,"").length<16||!document.getElementById("cnm").value||document.getElementById("cexp").value.length<5||document.getElementById("ccvv").value.length<3){alert("من فضلك أكمل بيانات البطاقة");return;}}else{const ids={voda:["vnum","vnm"],we:["wnum","wnm"],orange:["onum","onm"]};const[a,b]=ids[D.pay];if(document.getElementById(a).value.length<11||!document.getElementById(b).value){alert("من فضلك أكمل البيانات");return;}}go(4);}
+function fillCf(){const d=new Date(D.date);document.getElementById("cf-s").textContent=D.stad.name;document.getElementById("cf-g").textContent=GN[D.gov];document.getElementById("cf-d").textContent=d.toLocaleDateString("ar-EG",{weekday:"long",year:"numeric",month:"long",day:"numeric"});document.getElementById("cf-t").textContent=D.range;document.getElementById("cf-dur").textContent=D.durTxt;document.getElementById("cf-p").textContent=PN[D.pay];document.getElementById("cf-pr").textContent=D.price+" جنيه";}
+function confirmBooking(){fetch('http://127.0.0.1:5000/api/booking',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({stadium:D.stad.name,gov:GN[D.gov],date:D.date,time:D.range,duration:D.durTxt,price:D.price,payment:PN[D.pay]})}).then(r=>r.json()).then(data=>{const ref="MK"+Math.floor(100000+Math.random()*900000);document.getElementById("tk-ref").textContent=ref;document.getElementById("tk-s").textContent=D.stad.name;document.getElementById("tk-g").textContent=GN[D.gov];document.getElementById("tk-d").textContent=new Date(D.date).toLocaleDateString("ar-EG");document.getElementById("tk-t").textContent=D.range;document.getElementById("tk-dur").textContent=D.durTxt;document.getElementById("tk-p").textContent=PN[D.pay];document.getElementById("tk-pr").textContent=D.price+" جنيه";[1,2,3,4].forEach(i=>document.getElementById("s"+i).className="stp done");document.querySelectorAll(".pg").forEach(p=>p.classList.remove("on"));document.getElementById("p5").classList.add("on");}).catch(()=>alert("حصل خطأ في الاتصال بالسيرفر"));}{const ref="MK"+Math.floor(100000+Math.random()*900000);const d=new Date(D.date);document.getElementById("tk-ref").textContent=ref;document.getElementById("tk-s").textContent=D.stad.name;document.getElementById("tk-g").textContent=GN[D.gov];document.getElementById("tk-d").textContent=d.toLocaleDateString("ar-EG",{year:"numeric",month:"long",day:"numeric"});document.getElementById("tk-t").textContent=D.range;document.getElementById("tk-dur").textContent=D.durTxt;document.getElementById("tk-p").textContent=PN[D.pay];document.getElementById("tk-pr").textContent=D.price+" جنيه";[1,2,3,4].forEach(i=>document.getElementById("s"+i).className="stp done");document.querySelectorAll(".pg").forEach(p=>p.classList.remove("on"));document.getElementById("p5").classList.add("on");window.scrollTo(0,0);}
+function reset(){D={gov:"",stad:null,date:"",start:null,dur:null,durTxt:"",price:0,range:"",pay:""};document.getElementById("gov").value="";document.getElementById("slist").innerHTML="";document.getElementById("ssec").classList.add("hidden");["cnum","cnm","cexp","ccvv","vnum","vnm","wnum","wnm","onum","onm"].forEach(id=>document.getElementById(id).value="");go(1);}
+</script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ملاعبي - واجهة صاحب الملعب</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:#0D1117;color:#E6EDF3;direction:rtl}
+.header{background:linear-gradient(135deg,#0D2818,#0F3D24);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1A3D28}
+.header-logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#1D9E75,#0F6E56);display:flex;align-items:center;justify-content:center;font-size:20px}
+.header-title{font-size:18px;font-weight:600;color:#fff}
+.header-sub{font-size:12px;color:#9FE1CB}
+.owner-badge{background:rgba(88,166,255,0.2);border:1px solid rgba(88,166,255,0.3);color:#58A6FF;padding:6px 14px;border-radius:20px;font-size:12px}
+.container{padding:20px;max-width:900px;margin:0 auto}
+.tabs{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid #30363D}
+.tab{padding:10px 20px;border:none;background:transparent;color:#8B949E;font-size:14px;cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;transition:all .2s;margin-bottom:-1px}
+.tab.active{color:#1D9E75;border-bottom-color:#1D9E75;font-weight:500}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.card{background:#1C2128;border:1px solid #30363D;border-radius:16px;padding:20px;margin-bottom:16px}
+.card-title{font-size:15px;font-weight:600;color:#fff;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card-title i{color:#1D9E75}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-full{grid-column:1/-1}
+.fld{margin-bottom:4px}
+.fld label{display:block;font-size:12px;color:#8B949E;margin-bottom:6px;font-weight:500}
+.fld input,.fld select,.fld textarea{width:100%;padding:11px 14px;border:1px solid #30363D;border-radius:10px;font-size:14px;color:#E6EDF3;background:#21262D;direction:rtl;font-family:inherit}
+.fld select option{background:#21262D}
+.fld textarea{height:80px;resize:none}
+.btn{padding:11px 20px;border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:8px}
+.btn-green{background:linear-gradient(135deg,#1D9E75,#0F6E56);color:#fff}
+.btn-full{width:100%;justify-content:center;margin-top:14px}
+.btn-outline{background:transparent;color:#8B949E;border:1px solid #30363D}
+.stad-card{background:#21262D;border:1px solid #30363D;border-radius:12px;padding:16px;margin-bottom:12px}
+.stad-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.stad-name{font-size:15px;font-weight:600;color:#fff}
+.stad-status{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px}
+.status-active{background:rgba(29,158,117,0.15);color:#9FE1CB;border:1px solid rgba(29,158,117,0.2)}
+.status-pending{background:rgba(239,159,39,0.15);color:#EF9F27;border:1px solid rgba(239,159,39,0.2)}
+.stad-info{display:flex;gap:16px;flex-wrap:wrap}
+.stad-info span{font-size:12px;color:#8B949E;display:flex;align-items:center;gap:4px}
+.stad-info i{font-size:12px;color:#1D9E75}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.stat-mini{background:#1C2128;border:1px solid #30363D;border-radius:12px;padding:16px;text-align:center}
+.stat-mini-num{font-size:24px;font-weight:700;color:#1D9E75;margin-bottom:4px}
+.stat-mini-lbl{font-size:12px;color:#8B949E}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{background:#161B22;padding:10px 14px;text-align:right;font-size:12px;color:#8B949E;border-bottom:1px solid #30363D}
+td{padding:10px 14px;font-size:13px;color:#E6EDF3;border-bottom:1px solid #21262D}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px}
+.badge-green{background:rgba(29,158,117,0.15);color:#9FE1CB;border:1px solid rgba(29,158,117,0.2)}
+.empty{text-align:center;padding:30px;color:#8B949E}
+.empty i{font-size:28px;display:block;margin-bottom:8px;color:#30363D}
+.success-msg{background:rgba(29,158,117,0.1);border:1px solid rgba(29,158,117,0.2);border-radius:10px;padding:12px 16px;color:#9FE1CB;font-size:13px;margin-top:12px;display:none}
+.error-msg{background:rgba(226,75,74,0.1);border:1px solid rgba(226,75,74,0.2);border-radius:10px;padding:12px 16px;color:#E24B4A;font-size:13px;margin-top:12px;display:none}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-logo">
+    <div class="logo-icon">⚽</div>
+    <div><div class="header-title">ملاعبي</div><div class="header-sub">واجهة صاحب الملعب</div></div>
+  </div>
+  <div class="owner-badge"><i class="fas fa-building"></i> صاحب ملعب</div>
+</div>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" id="tab1btn"><i class="fas fa-futbol"></i> ملاعبي</button>
+    <button class="tab" id="tab2btn"><i class="fas fa-plus"></i> إضافة ملعب</button>
+    <button class="tab" id="tab3btn"><i class="fas fa-calendar-check"></i> الحجوزات</button>
+  </div>
+  <div class="tab-content active" id="tab-stadiums">
+    <div class="stats-row">
+      <div class="stat-mini"><div class="stat-mini-num" id="myStadiums">0</div><div class="stat-mini-lbl">ملاعبي</div></div>
+      <div class="stat-mini"><div class="stat-mini-num" id="myBookings">0</div><div class="stat-mini-lbl">حجوزاتي</div></div>
+      <div class="stat-mini"><div class="stat-mini-num" id="myRevenue">0</div><div class="stat-mini-lbl">إيراداتي (جنيه)</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="fas fa-list"></i> ملاعبي المسجلة</div>
+      <div id="myStadiumsList"><div class="empty"><i class="fas fa-futbol"></i>لم تسجل أي ملعب بعد</div></div>
+    </div>
+  </div>
+  <div class="tab-content" id="tab-add">
+    <div class="card">
+      <div class="card-title"><i class="fas fa-plus-circle"></i> تسجيل ملعب جديد</div>
+      <div class="form-grid">
+        <div class="fld"><label>اسم الملعب</label><input type="text" id="stadName" placeholder="مثال: ملعب النجوم"/></div>
+        <div class="fld"><label>المحافظة</label><select id="stadGov"><option value="">-- اختر --</option><option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option><option>القليوبية</option><option>الشرقية</option><option>الدقهلية</option><option>الغربية</option><option>المنوفية</option><option>البحيرة</option><option>كفر الشيخ</option><option>دمياط</option><option>الإسماعيلية</option><option>السويس</option><option>بورسعيد</option><option>الفيوم</option><option>بني سويف</option><option>المنيا</option><option>أسيوط</option><option>سوهاج</option><option>قنا</option><option>الأقصر</option><option>أسوان</option><option>البحر الأحمر</option><option>الوادي الجديد</option><option>مطروح</option><option>شمال سيناء</option><option>جنوب سيناء</option></select></div>
+        <div class="fld"><label>المنطقة</label><input type="text" id="stadArea" placeholder="مثال: مدينة نصر"/></div>
+        <div class="fld"><label>سعر الساعة (جنيه)</label><input type="number" id="stadPrice" placeholder="200"/></div>
+        <div class="fld"><label>حجم الملعب</label><select id="stadSize"><option value="5x5">5 × 5</option><option value="7x7">7 × 7</option><option value="11x11">11 × 11</option></select></div>
+        <div class="fld"><label>رقم التواصل</label><input type="tel" id="stadPhone" placeholder="01xxxxxxxxx"/></div>
+        <div class="fld form-full"><label>وصف الملعب</label><textarea id="stadDesc" placeholder="اكتب وصف مختصر..."></textarea></div>
+      </div>
+      <button class="btn btn-green btn-full" id="addBtn"><i class="fas fa-plus"></i> تسجيل الملعب</button>
+      <div class="success-msg" id="successMsg"><i class="fas fa-check-circle"></i> تم تسجيل الملعب بنجاح!</div>
+      <div class="error-msg" id="errorMsg"><i class="fas fa-exclamation-circle"></i> من فضلك أكمل جميع البيانات!</div>
+    </div>
+  </div>
+  <div class="tab-content" id="tab-bookings">
+    <div class="card">
+      <div class="card-title"><i class="fas fa-calendar-check"></i> حجوزات ملاعبي <button class="btn btn-outline" id="refreshBtn" style="margin-right:auto;padding:6px 12px;font-size:12px"><i class="fas fa-sync-alt"></i> تحديث</button></div>
+      <div class="table-wrap"><table><thead><tr><th>#</th><th>الملعب</th><th>التاريخ</th><th>الموعد</th><th>المدة</th><th>الدفع</th><th>المبلغ</th></tr></thead><tbody id="bookingsTable"><tr><td colspan="7" class="empty"><i class="fas fa-inbox"></i>لا يوجد حجوزات</td></tr></tbody></table></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var myStadiums = JSON.parse(localStorage.getItem('myStadiums') || '[]');
+
+function showTab(name) {
+  var tabs = document.querySelectorAll('.tab');
+  var contents = document.querySelectorAll('.tab-content');
+  tabs.forEach(function(t) { t.classList.remove('active'); });
+  contents.forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'stadiums') { document.getElementById('tab1btn').classList.add('active'); renderMyStadiums(); }
+  if (name === 'add') { document.getElementById('tab2btn').classList.add('active'); }
+  if (name === 'bookings') { document.getElementById('tab3btn').classList.add('active'); loadBookings(); }
+}
+
+document.getElementById('tab1btn').addEventListener('click', function() { showTab('stadiums'); });
+document.getElementById('tab2btn').addEventListener('click', function() { showTab('add'); });
+document.getElementById('tab3btn').addEventListener('click', function() { showTab('bookings'); });
+document.getElementById('refreshBtn').addEventListener('click', function() { loadBookings(); });
+
+document.getElementById('addBtn').addEventListener('click', function() {
+  var name = document.getElementById('stadName').value;
+  var gov = document.getElementById('stadGov').value;
+  var area = document.getElementById('stadArea').value;
+  var price = document.getElementById('stadPrice').value;
+  var phone = document.getElementById('stadPhone').value;
+  if (!name || !gov || !area || !price || !phone) {
+    document.getElementById('errorMsg').style.display = 'block';
+    document.getElementById('successMsg').style.display = 'none';
+    return;
+  }
+  var s = {id: Date.now(), name: name, gov: gov, area: area, price: parseInt(price), size: document.getElementById('stadSize').value, phone: phone, desc: document.getElementById('stadDesc').value, status: 'pending'};
+  myStadiums.push(s);
+  localStorage.setItem('myStadiums', JSON.stringify(myStadiums));
+  document.getElementById('successMsg').style.display = 'block';
+  document.getElementById('errorMsg').style.display = 'none';
+  document.getElementById('stadName').value = '';
+  document.getElementById('stadArea').value = '';
+  document.getElementById('stadPrice').value = '';
+  document.getElementById('stadPhone').value = '';
+  document.getElementById('stadDesc').value = '';
+  document.getElementById('stadGov').value = '';
+});
+
+function renderMyStadiums() {
+  var list = document.getElementById('myStadiumsList');
+  if (myStadiums.length === 0) {
+    list.innerHTML = '<div class="empty"><i class="fas fa-futbol"></i>لم تسجل أي ملعب بعد</div>';
+    document.getElementById('myStadiums').textContent = 0;
+    return;
+  }
+  var html = '';
+  myStadiums.forEach(function(s) {
+    html += '<div class="stad-card"><div class="stad-top"><div class="stad-name"><i class="fas fa-futbol" style="color:#1D9E75;margin-left:6px"></i>' + s.name + '</div><span class="stad-status ' + (s.status === 'active' ? 'status-active' : 'status-pending') + '">' + (s.status === 'active' ? '✅ نشط' : '⏳ قيد المراجعة') + '</span></div><div class="stad-info"><span><i class="fas fa-map-marker-alt"></i>' + s.gov + ' - ' + s.area + '</span><span><i class="fas fa-money-bill-wave"></i>' + s.price + ' جنيه/ساعة</span><span><i class="fas fa-phone"></i>' + s.phone + '</span></div></div>';
+  });
+  list.innerHTML = html;
+  document.getElementById('myStadiums').textContent = myStadiums.length;
+}
+
+function loadBookings() {
+  fetch('http://127.0.0.1:5000/api/bookings')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var tbody = document.getElementById('bookingsTable');
+      if (data.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty"><i class="fas fa-inbox"></i>لا يوجد حجوزات</td></tr>'; return; }
+      var html = '';
+      data.forEach(function(b) {
+        html += '<tr><td><span class="badge badge-green">MK' + b.id + '</span></td><td>' + (b.stadium||'-') + '</td><td>' + (b.date||'-') + '</td><td>' + (b.time||'-') + '</td><td>' + (b.duration||'-') + '</td><td>' + (b.payment||'-') + '</td><td style="color:#1D9E75;font-weight:600">' + (b.price||0) + ' جنيه</td></tr>';
+      });
+      tbody.innerHTML = html;
+      document.getElementById('myBookings').textContent = data.length;
+      var total = 0;
+      data.forEach(function(b) { total += (b.price||0); });
+      document.getElementById('myRevenue').textContent = total;
+    })
+    .catch(function() { document.getElementById('bookingsTable').innerHTML = '<tr><td colspan="7" class="empty"><i class="fas fa-exclamation-triangle"></i>تأكد إن السيرفر شغال</td></tr>'; });
+}
+
+renderMyStadiums();
+</script>
+</body>
+</html>
