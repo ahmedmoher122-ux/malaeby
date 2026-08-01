@@ -169,7 +169,7 @@ function renderMyStadiums() {
 }
 
 function loadBookings() {
-  fetch('http://127.0.0.1:5000/api/bookings')
+  fetch('https://malaeby-production.up.railway.app/api/bookings')
     .then(function(r) { return r.json(); })
     .then(function(data) {
       var tbody = document.getElementById('bookingsTable');
